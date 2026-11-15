@@ -261,6 +261,23 @@ class GlitchOverlayService : Service() {
         val cbTurbo = view.findViewById<CheckBox>(R.id.cb_turbo_spam)
         val btnForceRoast = view.findViewById<TextView>(R.id.btn_instant_roast)
         val btnReset = view.findViewById<TextView>(R.id.btn_clear_counter)
+        val btnToggleSource = view.findViewById<TextView>(R.id.btn_toggle_source)
+
+        val updateSourceText = {
+            if (config.useCustomFile) {
+                val lines = config.getCustomLines().size
+                btnToggleSource?.text = "File: $lines lines"
+                btnToggleSource?.setTextColor(Color.parseColor("#FFFFFF"))
+            } else {
+                btnToggleSource?.text = "Mode: AI"
+                btnToggleSource?.setTextColor(Color.parseColor("#A1A1AA"))
+            }
+        }
+        updateSourceText()
+        btnToggleSource?.setOnClickListener {
+            config.useCustomFile = !config.useCustomFile
+            updateSourceText()
+        }
 
         // Setup Header drag
         setupHeaderDrag(header)

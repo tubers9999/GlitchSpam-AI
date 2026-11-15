@@ -137,6 +137,30 @@ class AppConfig(context: Context) {
         get() = prefs.getInt("total_sent_count", 0)
         set(value) = prefs.edit().putInt("total_sent_count", value).apply()
 
+    var useCustomFile: Boolean
+        get() = prefs.getBoolean("use_custom_file", false)
+        set(value) = prefs.edit().putBoolean("use_custom_file", value).apply()
+
+    var customFileContent: String
+        get() = prefs.getString("custom_file_content", "") ?: ""
+        set(value) = prefs.edit().putString("custom_file_content", value).apply()
+
+    var customLineIndex: Int
+        get() = prefs.getInt("custom_line_index", 0)
+        set(value) = prefs.edit().putInt("custom_line_index", value).apply()
+
+    fun getCustomLines(): List<String> {
+        return customFileContent.lines().map { it.trim() }.filter { it.isNotEmpty() }
+    }
+
+    fun getNextCustomLine(): String {
+        val lines = getCustomLines()
+        if (lines.isEmpty()) return "Glitch message"
+        val idx = customLineIndex % lines.size
+        customLineIndex = (customLineIndex + 1) % lines.size
+        return lines[idx]
+    }
+
     fun incrementSentCount() {
         totalSentCount += 1
     }

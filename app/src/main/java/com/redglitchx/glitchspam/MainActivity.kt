@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.accessibility.AccessibilityManager
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.lifecycleScope
@@ -61,6 +62,35 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnTestRoast: Button
     private lateinit var tvTerminal: TextView
     private lateinit var btnSaveSettings: Button
+
+    // Custom File (.txt) Script Mode
+    private lateinit var swUseCustomFile: SwitchCompat
+    private lateinit var btnLoadCustomFile: Button
+    private lateinit var btnClearCustomFile: Button
+    private lateinit var etCustomFileContent: EditText
+    private lateinit var tvCustomLinesCount: TextView
+
+    private val openDocumentLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            try {
+                contentResolver.openInputStream(uri)?.use { stream ->
+                    val text = stream.bufferedReader().use { it.readText() }
+                    etCustomFileContent.setText(text)
+                    config.customFileContent = text
+                    config.useCustomFile = true
+                    swUseCustomFile.isChecked = true
+                    updateLoadedLinesCount()
+                    logTerminal("Loaded ${config.getCustomLines().size} messages from file.")
+                    Toast.makeText(this, "Loaded ${config.getCustomLines().size} messages from file!", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                logTerminal("[ERROR] Failed to read file: ${e.message}")
+                Toast.makeText(this, "Error reading file: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
     private val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
@@ -117,6 +147,12 @@ class MainActivity : AppCompatActivity() {
         btnTestRoast = findViewById(R.id.btn_test_roast)
         tvTerminal = findViewById(R.id.tv_terminal_output)
         btnSaveSettings = findViewById(R.id.btn_save_settings)
+
+        swUseCustomFile = findViewById(R.id.sw_use_custom_file)
+        btnLoadCustomFile = findViewById(R.id.btn_load_custom_file)
+        btnClearCustomFile = findViewById(R.id.btn_clear_custom_file)
+        etCustomFileContent = findViewById(R.id.et_custom_file_content)
+        tvCustomLinesCount = findViewById(R.id.tv_custom_lines_count)
     }
 
     private fun setupListeners() {
@@ -289,6 +325,32 @@ class MainActivity : AppCompatActivity() {
             logTerminal("[CONFIG] All settings successfully saved to disk.")
             Toast.makeText(this, "Settings Saved!", Toast.LENGTH_SHORT).show()
         }
+
+        // Custom File (.txt) Script Mode Listeners
+        btnLoadCustomFile.setOnClickListener {
+            openDocumentLauncher.launch("*/*")
+        }
+
+        btnClearCustomFile.setOnClickListener {
+            etCustomFileContent.setText("")
+            config.customFileContent = ""
+            updateLoadedLinesCount()
+            logTerminal("Custom messages cleared.")
+        }
+
+        swUseCustomFile.setOnCheckedChangeListener { _, isChecked ->
+            config.useCustomFile = isChecked
+            logTerminal("Custom file mode: ${if (isChecked) "ACTIVE" else "OFF"}")
+        }
+
+        etCustomFileContent.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                config.customFileContent = s?.toString() ?: ""
+                updateLoadedLinesCount()
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
     }
 
     private fun loadSavedConfig() {
@@ -298,6 +360,10 @@ class MainActivity : AppCompatActivity() {
 
         swBypass.isChecked = config.bypassEnabled
         swShakeKill.isChecked = config.shakeToKill
+
+        swUseCustomFile.isChecked = config.useCustomFile
+        etCustomFileContent.setText(config.customFileContent)
+        updateLoadedLinesCount()
 
         sbDelay.progress = config.spamDelayMs.toInt()
         tvDelayDisplay.text = "Spam Delay: ${config.spamDelayMs} ms"
@@ -356,6 +422,13 @@ class MainActivity : AppCompatActivity() {
         config.language = spLanguage.selectedItem?.toString() ?: "Română"
         config.spamDelayMs = maxOf(50, sbDelay.progress).toLong()
         config.shakeToKill = swShakeKill.isChecked
+        config.useCustomFile = swUseCustomFile.isChecked
+        config.customFileContent = etCustomFileContent.text.toString().trim()
+    }
+
+    private fun updateLoadedLinesCount() {
+        val count = config.getCustomLines().size
+        tvCustomLinesCount.text = "$count messages loaded"
     }
 
     private fun checkPermissions() {

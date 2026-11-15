@@ -171,6 +171,22 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/btn_toggle_source"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_bar_button_secondary"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:text="Source: AI"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp" />
+
             <CheckBox
                 android:id="@+id/cb_turbo_spam"
                 android:layout_width="wrap_content"
@@ -180,15 +196,11 @@
                 android:textColor="@color/text_secondary"
                 android:textSize="11sp" />
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
             <TextView
                 android:id="@+id/btn_clear_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
+                android:layout_marginStart="6dp"
                 android:background="@drawable/bg_bar_button_secondary"
                 android:clickable="true"
                 android:focusable="true"
