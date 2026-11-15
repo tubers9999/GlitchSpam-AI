@@ -139,15 +139,26 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+                }
+            }
+
             saveConfig()
             val serviceIntent = Intent(this, GlitchOverlayService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(serviceIntent)
-            } else {
-                startService(serviceIntent)
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(serviceIntent)
+                } else {
+                    startService(serviceIntent)
+                }
+                logTerminal("Floating Bubble & HUD launched successfully.")
+                Toast.makeText(this, "Glitch HUD Bubble launched!", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                logTerminal("[ERROR] Failed to start overlay: ${e.message}")
+                Toast.makeText(this, "Error starting overlay: ${e.message}", Toast.LENGTH_LONG).show()
             }
-            logTerminal("Floating Bubble & HUD launched successfully.")
-            Toast.makeText(this, "Glitch HUD Bubble launched!", Toast.LENGTH_SHORT).show()
         }
 
         // Endpoint Presets

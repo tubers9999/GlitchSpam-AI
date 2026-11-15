@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Build
@@ -14,6 +15,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.CheckBox
@@ -65,27 +67,39 @@ class GlitchOverlayService : Service() {
     }
 
     private fun startForegroundServiceNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "GlitchSpam Overlay Service",
-                NotificationManager.IMPORTANCE_LOW
-            ).apply {
-                description = "Keeps GlitchSpam floating HUD bubble active"
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    CHANNEL_ID,
+                    "GlitchSpam Overlay Service",
+                    NotificationManager.IMPORTANCE_LOW
+                ).apply {
+                    description = "Keeps GlitchSpam floating HUD bubble active"
+                }
+                val nm = getSystemService(NotificationManager::class.java)
+                nm?.createNotificationChannel(channel)
             }
-            val nm = getSystemService(NotificationManager::class.java)
-            nm?.createNotificationChannel(channel)
+
+            val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("GlitchSpam AI HUD Active")
+                .setContentText("Tap floating bubble on screen to control HUD")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setOngoing(true)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(
+                    NOTIFICATION_ID,
+                    notification,
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                )
+            } else {
+                startForeground(NOTIFICATION_ID, notification)
+            }
+        } catch (e: Exception) {
+            Log.e("GlitchOverlay", "Error starting foreground notification: ${e.message}", e)
         }
-
-        val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("GlitchSpam AI HUD Active")
-            .setContentText("Tap floating bubble on screen to control auto-roast & spammer")
-            .setSmallIcon(R.drawable.ic_glitch_logo)
-            .setOngoing(true)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .build()
-
-        startForeground(NOTIFICATION_ID, notification)
     }
 
     private fun setupShakeDetector() {
@@ -135,8 +149,12 @@ class GlitchOverlayService : Service() {
         }
 
         setupBubbleTouchListener()
-        windowManager.addView(bubbleView, bubbleParams)
-        updateBubbleStatus(config.isActive)
+        try {
+            windowManager.addView(bubbleView, bubbleParams)
+            updateBubbleStatus(config.isActive)
+        } catch (e: Exception) {
+            Log.e("GlitchOverlay", "Error adding bubbleView to WindowManager: ${e.message}", e)
+        }
     }
 
     private fun setupBubbleTouchListener() {
@@ -208,13 +226,21 @@ class GlitchOverlayService : Service() {
         }
 
         setupWindowControls(windowView!!)
-        windowManager.addView(windowView, windowParams)
-        isWindowExpanded = true
+        try {
+            windowManager.addView(windowView, windowParams)
+            isWindowExpanded = true
+        } catch (e: Exception) {
+            Log.e("GlitchOverlay", "Error adding windowView to WindowManager: ${e.message}", e)
+        }
     }
 
     private fun dismissFloatingWindow() {
         windowView?.let {
-            windowManager.removeView(it)
+            try {
+                windowManager.removeView(it)
+            } catch (e: Exception) {
+                Log.e("GlitchOverlay", "Error removing windowView: ${e.message}")
+            }
             windowView = null
         }
         isWindowExpanded = false
@@ -349,7 +375,11 @@ class GlitchOverlayService : Service() {
         shakeDetector?.stop()
         dismissFloatingWindow()
         bubbleView?.let {
-            windowManager.removeView(it)
+            try {
+                windowManager.removeView(it)
+            } catch (e: Exception) {
+                Log.e("GlitchOverlay", "Error removing bubbleView: ${e.message}")
+            }
             bubbleView = null
         }
     }
