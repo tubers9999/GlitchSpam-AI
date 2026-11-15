@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnPresetOpenRouter: Button
     private lateinit var btnPresetGroq: Button
     private lateinit var btnPresetDeepSeek: Button
+    private lateinit var btnPresetNvidiaFree: Button
+    private lateinit var btnPresetOpenRouterFree: Button
 
     private lateinit var swBypass: SwitchCompat
     private lateinit var spJailbreak: Spinner
@@ -97,6 +99,8 @@ class MainActivity : AppCompatActivity() {
         btnPresetOpenRouter = findViewById(R.id.btn_preset_openrouter)
         btnPresetGroq = findViewById(R.id.btn_preset_groq)
         btnPresetDeepSeek = findViewById(R.id.btn_preset_deepseek)
+        btnPresetNvidiaFree = findViewById(R.id.btn_preset_nvidia_free)
+        btnPresetOpenRouterFree = findViewById(R.id.btn_preset_openrouter_free)
 
         swBypass = findViewById(R.id.sw_bypass_mode)
         spJailbreak = findViewById(R.id.sp_jailbreak_presets)
@@ -186,19 +190,53 @@ class MainActivity : AppCompatActivity() {
             logTerminal("Preset loaded: DeepSeek API")
         }
 
+        // ── FREE / No-Key Presets ──
+        btnPresetNvidiaFree.setOnClickListener {
+            etApiUrl.setText("https://integrate.api.nvidia.com/v1")
+            etApiKey.setText("")
+            // Load NVIDIA NIM models into spinner immediately
+            val nimModels = AppConfig.NVIDIA_NIM_MODELS
+            config.availableModels = nimModels
+            setupModelSpinner(nimModels, nimModels.firstOrNull() ?: "")
+            saveConfig()
+            logTerminal("[PRESET] NVIDIA NIM Free Playground — ${nimModels.size} modele fără login!")
+            logTerminal("[INFO] Key: lăsat gol (nvapi-guest automat). Testează cu Auto-Detect.")
+            Toast.makeText(this, "NVIDIA NIM Free: ${nimModels.size} modele încărcate!", Toast.LENGTH_SHORT).show()
+        }
+
+        btnPresetOpenRouterFree.setOnClickListener {
+            etApiUrl.setText("https://openrouter.ai/api/v1")
+            etApiKey.setText("")
+            val freeModels = AppConfig.OPENROUTER_FREE_MODELS
+            config.availableModels = freeModels
+            setupModelSpinner(freeModels, freeModels.firstOrNull() ?: "")
+            saveConfig()
+            logTerminal("[PRESET] OpenRouter FREE — ${freeModels.size} modele gratuite fără key!")
+            logTerminal("[INFO] Modele :free — NVIDIA Nemotron, Gemma 4, Liquid LFM, etc.")
+            Toast.makeText(this, "OpenRouter Free: ${freeModels.size} modele gratuite!", Toast.LENGTH_SHORT).show()
+        }
+
         // Auto-Detect Models
         btnAutoDetect.setOnClickListener {
             saveConfig()
             val url = etApiUrl.text.toString().trim()
             val key = etApiKey.text.toString().trim()
+            val isNvidiaFree = url.contains("integrate.api.nvidia.com")
+            val isOpenRouterFree = url.contains("openrouter.ai") && key.isBlank()
 
-            if (key.isBlank()) {
+            if (key.isBlank() && !isNvidiaFree && !isOpenRouterFree) {
                 logTerminal("[WARN] No API key provided. Using offline models.")
                 Toast.makeText(this, "Enter an API Key to query remote models!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            logTerminal("[DETECT] Querying $url/models ...")
+            if (isNvidiaFree && key.isBlank()) {
+                logTerminal("[DETECT] NVIDIA NIM Free — se foloseste nvapi-guest token automat...")
+            } else if (isOpenRouterFree) {
+                logTerminal("[DETECT] OpenRouter — se cauta modele :free publice...")
+            } else {
+                logTerminal("[DETECT] Querying $url/models ...")
+            }
             btnAutoDetect.isEnabled = false
             btnAutoDetect.text = "DETECTING..."
 

@@ -25,6 +25,7 @@ class AiClient(private val config: AppConfig) {
     /**
      * Auto-detect available models from the target OpenAI-compatible endpoint.
      * Queries GET {apiUrl}/models
+     * Supports NVIDIA NIM guest token and OpenRouter free tier (no key required).
      */
     suspend fun fetchAvailableModels(): Result<List<String>> = withContext(Dispatchers.IO) {
         try {
@@ -33,9 +34,17 @@ class AiClient(private val config: AppConfig) {
                 .url(url)
                 .get()
 
+            val cleanUrl = config.apiUrl.trim().trimEnd('/')
+            val isNvidia = cleanUrl.contains("integrate.api.nvidia.com")
+            val isOpenRouter = cleanUrl.contains("openrouter.ai")
+
             if (config.apiKey.isNotBlank()) {
                 requestBuilder.header("Authorization", "Bearer ${config.apiKey}")
+            } else if (isNvidia) {
+                // NVIDIA NIM accepts 'nvapi-guest' for /models listing (free, no login)
+                requestBuilder.header("Authorization", "Bearer nvapi-guest")
             }
+            // OpenRouter /models is public — no auth needed
 
             val response = httpClient.newCall(requestBuilder.build()).execute()
             if (!response.isSuccessful) {
@@ -72,8 +81,16 @@ class AiClient(private val config: AppConfig) {
                 return@withContext Result.failure(Exception("No models found in JSON response"))
             }
 
+            // For OpenRouter: filter only free models (id ends with ":free") when no key provided
+            val filteredList = if (config.apiKey.isBlank() && config.apiUrl.contains("openrouter.ai")) {
+                val freeModels = modelsList.filter { it.endsWith(":free") }
+                if (freeModels.isNotEmpty()) freeModels else modelsList
+            } else {
+                modelsList
+            }
+
             // Sort alphabetically with popular models on top
-            val prioritized = modelsList.sortedWith(Comparator { a, b ->
+            val prioritized = filteredList.sortedWith(Comparator { a, b ->
                 val aScore = getPriorityScore(a)
                 val bScore = getPriorityScore(b)
                 if (aScore != bScore) bScore.compareTo(aScore) else a.compareTo(b)
@@ -107,8 +124,14 @@ class AiClient(private val config: AppConfig) {
         val tone = config.tone
         val bypass = config.bypassEnabled
 
-        // If no API key is provided, use instant offline roast database
-        if (config.apiKey.isBlank()) {
+        // If no API key is provided, check for keyless endpoints
+        val cleanUrl = config.apiUrl.trim().trimEnd('/')
+        val isNvidia = cleanUrl.contains("integrate.api.nvidia.com")
+        val isOpenRouter = cleanUrl.contains("openrouter.ai")
+        val isKeyless = isNvidia || isOpenRouter
+
+        // If no API key is provided, use instant offline roast database (unless keyless endpoint)
+        if (config.apiKey.isBlank() && !isKeyless) {
             android.util.Log.w("AiClient", "API key is blank, using offline preset database")
             return@withContext PresetRoasts.getRandomRoast(targetLang)
         }
@@ -140,8 +163,16 @@ class AiClient(private val config: AppConfig) {
 
             val request = Request.Builder()
                 .url(endpoint)
-                .header("Authorization", "Bearer ${config.apiKey.trim()}")
                 .header("Content-Type", "application/json")
+                .apply {
+                    if (config.apiKey.isNotBlank()) {
+                        header("Authorization", "Bearer ${config.apiKey.trim()}")
+                    } else if (cleanUrl.contains("integrate.api.nvidia.com")) {
+                        // NVIDIA NIM guest token for playground-compatible chat
+                        header("Authorization", "Bearer nvapi-guest")
+                    }
+                    // OpenRouter free models work without auth header
+                }
                 .post(requestBody)
                 .build()
 
