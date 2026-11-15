@@ -1,10 +1,14 @@
 package com.redglitchx.glitchspam.service
 
 import android.accessibilityservice.AccessibilityService
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityWindowInfo
 import com.redglitchx.glitchspam.GlitchApp
 import com.redglitchx.glitchspam.model.AppConfig
 import com.redglitchx.glitchspam.net.AiClient
@@ -46,8 +50,13 @@ class GlitchAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event == null || !config.isActive) return
 
-        val rootNode = rootInActiveWindow ?: return
         val packageName = event.packageName?.toString() ?: ""
+        if (packageName == applicationContext.packageName) return
+
+        val rootNode = event.source ?: rootInActiveWindow ?: run {
+            val appWindow = windows?.firstOrNull { it.type == AccessibilityWindowInfo.TYPE_APPLICATION }
+            appWindow?.root
+        } ?: return
 
         // Process message inspection asynchronously to keep accessibility snappy
         serviceScope.launch {
@@ -93,9 +102,9 @@ class GlitchAccessibilityService : AccessibilityService() {
 
             // Mark as processed
             lastProcessedMessage = latestMessage
-            notifyStatus("Target Detected in $packageName", config.totalSentCount, latestMessage)
+            notifyStatus("Target in $packageName", config.totalSentCount, latestMessage)
 
-            // Trigger roast and spam
+            // Trigger reply
             executeRoastAndSpam(rootNode, latestMessage)
 
         } catch (e: Exception) {
@@ -114,7 +123,7 @@ class GlitchAccessibilityService : AccessibilityService() {
             for (i in 0 until burstTotal) {
                 if (!config.isActive) break
 
-                notifyStatus("Generating AI Roast #${i + 1}...", config.totalSentCount, incomingText)
+                notifyStatus("Generating reply #${i + 1}...", config.totalSentCount, incomingText)
 
                 // Generate AI comeback or fetch roast
                 val roastText = aiClient.generateRoast(incomingText)
@@ -125,18 +134,32 @@ class GlitchAccessibilityService : AccessibilityService() {
                 val inputNode = findInputEditText(currentRoot)
 
                 if (inputNode != null) {
-                    // Inject text
+                    inputNode.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
+
+                    // 1. Primary injection via ACTION_SET_TEXT
                     val arguments = Bundle().apply {
                         putCharSequence(
                             AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
                             roastText
                         )
                     }
-                    val textSet = inputNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
+                    var textSet = inputNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
+
+                    // 2. Clipboard paste fallback (critical for Discord React Native state trigger)
+                    try {
+                        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+                        val clip = ClipData.newPlainText("glitch_text", roastText)
+                        clipboard?.setPrimaryClip(clip)
+                        if (!textSet) {
+                            textSet = inputNode.performAction(AccessibilityNodeInfo.ACTION_PASTE)
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Clipboard paste fallback: ${e.message}")
+                    }
 
                     if (textSet) {
-                        // Small micro-delay for UI rendering before clicking send
-                        delay(60)
+                        // Micro-delay for UI rendering before clicking send
+                        delay(120)
 
                         // Find and click send button
                         val refreshedRoot = rootInActiveWindow ?: currentRoot
@@ -144,9 +167,9 @@ class GlitchAccessibilityService : AccessibilityService() {
                         if (sendButton != null) {
                             sendButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                             config.incrementSentCount()
-                            notifyStatus("Sent Roast #${config.totalSentCount}", config.totalSentCount, roastText)
+                            notifyStatus("Sent #${config.totalSentCount}", config.totalSentCount, roastText)
                         } else {
-                            // Fallback: try pressing ACTION_CLICK on input if send button was not distinct
+                            // Fallback: try pressing ACTION_CLICK on send text
                             sendButtonFallbackClick(refreshedRoot)
                         }
                     }
@@ -164,7 +187,7 @@ class GlitchAccessibilityService : AccessibilityService() {
     }
 
     /**
-     * Force sends an instant roast right now into whichever input field is open on screen!
+     * Force sends an instant reply right now into whichever input field is open on screen!
      */
     fun forceRoastNow() {
         val rootNode = rootInActiveWindow ?: return
@@ -178,8 +201,15 @@ class GlitchAccessibilityService : AccessibilityService() {
         if (node == null) return
 
         val text = node.text?.toString()?.trim()
-        if (!text.isNullOrEmpty() && node.className != "android.widget.EditText") {
-            result.add(text)
+        val desc = node.contentDescription?.toString()?.trim()
+        val className = node.className?.toString() ?: ""
+
+        if (!className.contains("EditText", ignoreCase = true)) {
+            if (!text.isNullOrEmpty()) {
+                result.add(text)
+            } else if (!desc.isNullOrEmpty() && desc.length > 2 && !desc.contains("avatar", true)) {
+                result.add(desc)
+            }
         }
 
         for (i in 0 until node.childCount) {
@@ -190,7 +220,21 @@ class GlitchAccessibilityService : AccessibilityService() {
     private fun findInputEditText(node: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
         if (node == null) return null
 
-        if (node.isEditable || node.className == "android.widget.EditText") {
+        val className = node.className?.toString() ?: ""
+        val viewId = node.viewIdResourceName?.lowercase() ?: ""
+        val desc = node.contentDescription?.toString()?.lowercase() ?: ""
+
+        val isEditableClass = node.isEditable ||
+                className.contains("EditText", ignoreCase = true) ||
+                viewId.contains("entry") || // WhatsApp
+                viewId.contains("chat_input") || // Discord
+                viewId.contains("text_input") ||
+                viewId.contains("chat_text_edit") || // Telegram
+                viewId.contains("input") ||
+                desc.contains("message") ||
+                desc.contains("mesaj")
+
+        if (isEditableClass && (node.isFocusable || node.isClickable || node.isEditable)) {
             return node
         }
 
@@ -211,7 +255,8 @@ class GlitchAccessibilityService : AccessibilityService() {
         val isSendDesc = desc.contains("send") || desc.contains("trimite") ||
                 desc.contains("enviar") || desc.contains("envoyer") || desc.contains("senden")
         val isSendId = viewId.contains("send") || viewId.contains("input_send") ||
-                viewId.contains("btn_send") || viewId.contains("send_button")
+                viewId.contains("btn_send") || viewId.contains("send_button") ||
+                viewId.contains("chat_input_send_button")
         val isSendText = text == "send" || text == "trimite"
 
         if (node.isClickable && (isSendDesc || isSendId || isSendText)) {

@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base Monochrome Ramp: Black, Deep Slate, Matte Gray, White -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- Cyberpunk Glitch Palette by redglitchx -->
-    <color name="cyber_bg">#0B0C10</color>
-    <color name="cyber_surface">#141622</color>
-    <color name="cyber_surface_light">#1D2032</color>
-    <color name="cyber_card_stroke">#2E334D</color>
+    <color name="cyber_bg">#09090B</color>
+    <color name="cyber_surface">#121215</color>
+    <color name="cyber_surface_light">#1C1C21</color>
+    <color name="cyber_card_stroke">#27272A</color>
     
-    <color name="glitch_red">#FF0055</color>
-    <color name="glitch_red_light">#FF3377</color>
-    <color name="glitch_red_dark">#B3003B</color>
-    <color name="glitch_red_trans">#33FF0055</color>
+    <!-- Primary Contrast Accents (Quiet White & Off-White) -->
+    <color name="glitch_red">#FFFFFF</color>
+    <color name="glitch_red_light">#F4F4F5</color>
+    <color name="glitch_red_dark">#E4E4E7</color>
+    <color name="glitch_red_trans">#14FFFFFF</color>
     
-    <color name="cyber_cyan">#00F0FF</color>
-    <color name="cyber_cyan_trans">#2200F0FF</color>
-    <color name="cyber_purple">#A855F7</color>
+    <color name="cyber_cyan">#E4E4E7</color>
+    <color name="cyber_cyan_trans">#14E4E4E7</color>
+    <color name="cyber_purple">#A1A1AA</color>
     
-    <color name="cyber_green">#00E676</color>
-    <color name="cyber_green_trans">#2200E676</color>
-    <color name="cyber_yellow">#FFD600</color>
-    <color name="cyber_yellow_trans">#22FFD600</color>
+    <!-- Quiet Semantic Accents -->
+    <color name="cyber_green">#22C55E</color>
+    <color name="cyber_green_trans">#1A22C55E</color>
+    <color name="cyber_yellow">#E4E4E7</color>
+    <color name="cyber_yellow_trans">#14E4E4E7</color>
     
-    <color name="text_primary">#F3F4F6</color>
-    <color name="text_secondary">#9CA3AF</color>
-    <color name="text_muted">#6B7280</color>
+    <!-- Structured Neutral Text Roles -->
+    <color name="text_primary">#F4F4F5</color>
+    <color name="text_secondary">#A1A1AA</color>
+    <color name="text_muted">#71717A</color>
     
-    <color name="overlay_window_bg">#F20D0F18</color>
+    <!-- Floating HUD Overlay Background (Matte Dark Glass) -->
+    <color name="overlay_window_bg">#FA121215</color>
+    <color name="bubble_bg">#18181C</color>
+    <color name="button_primary_bg">#FFFFFF</color>
+    <color name="button_primary_text">#09090B</color>
+    <color name="button_secondary_bg">#1C1C21</color>
+    <color name="button_secondary_stroke">#2E2E35</color>
 </resources>

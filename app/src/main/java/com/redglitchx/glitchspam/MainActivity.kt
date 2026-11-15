@@ -323,14 +323,14 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         val isAccGranted = isAccessibilityServiceEnabled(this, GlitchAccessibilityService::class.java)
         if (isAccGranted) {
-            tvAccStatus.text = "Status: ACTIVE & CONNECTED ✓"
-            tvAccStatus.setTextColor(Color.parseColor("#00E676"))
-            btnGrantAcc.text = "CONFIGURED"
+            tvAccStatus.text = "Status: Active"
+            tvAccStatus.setTextColor(Color.parseColor("#22C55E"))
+            btnGrantAcc.text = "Enabled"
             btnGrantAcc.isEnabled = false
         } else {
-            tvAccStatus.text = "Status: Disabled (Required to read msgs & send)"
-            tvAccStatus.setTextColor(Color.parseColor("#FF0055"))
-            btnGrantAcc.text = "ENABLE"
+            tvAccStatus.text = "Status: Disabled"
+            tvAccStatus.setTextColor(Color.parseColor("#A1A1AA"))
+            btnGrantAcc.text = "Enable"
             btnGrantAcc.isEnabled = true
         }
 
@@ -341,14 +341,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (isOverlayGranted) {
-            tvOverlayStatus.text = "Status: GRANTED ✓"
-            tvOverlayStatus.setTextColor(Color.parseColor("#00E676"))
-            btnGrantOverlay.text = "GRANTED"
+            tvOverlayStatus.text = "Status: Granted"
+            tvOverlayStatus.setTextColor(Color.parseColor("#22C55E"))
+            btnGrantOverlay.text = "Granted"
             btnGrantOverlay.isEnabled = false
         } else {
-            tvOverlayStatus.text = "Status: Permission required for HUD bubble"
-            tvOverlayStatus.setTextColor(Color.parseColor("#FFD600"))
-            btnGrantOverlay.text = "GRANT"
+            tvOverlayStatus.text = "Status: Required for HUD"
+            tvOverlayStatus.setTextColor(Color.parseColor("#A1A1AA"))
+            btnGrantOverlay.text = "Grant"
             btnGrantOverlay.isEnabled = true
         }
     }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/window_root"
-    android:layout_width="320dp"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_floating_window"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="16dp">
 
     <!-- Header bar -->
     <LinearLayout
@@ -17,8 +17,8 @@
 
         <View
             android:id="@+id/status_led"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
             android:background="@drawable/bg_badge" />
 
         <TextView
@@ -27,40 +27,39 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="GLITCH SPAMMER • HUD"
-            android:textColor="@color/glitch_red"
+            android:text="Glitch Assistant HUD"
+            android:textColor="@color/text_primary"
             android:textSize="13sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/btn_minimize"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:gravity="center"
             android:text="—"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/btn_close"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
             android:gravity="center"
             android:text="✕"
-            android:textColor="@color/glitch_red"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:background="@color/cyber_card_stroke" />
 
-    <!-- Live Stats -->
+    <!-- Status & Stats -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,7 +70,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Status: IDLE"
+            android:text="Status: Paused"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
 
@@ -79,8 +78,8 @@
             android:id="@+id/tv_hud_stats"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sent: 0 | Speed: 0/s"
-            android:textColor="@color/cyber_cyan"
+            android:text="Count: 0"
+            android:textColor="@color/text_muted"
             android:textSize="11sp" />
     </LinearLayout>
 
@@ -88,11 +87,11 @@
     <Button
         android:id="@+id/btn_toggle_active"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/bg_neon_button"
-        android:text="⚡ START AUTO-ROAST &amp; SPAM"
-        android:textColor="@color/white"
+        android:text="Start Assistant"
+        android:textColor="@color/button_primary_text"
         android:textSize="12sp"
         android:textStyle="bold" />
 
@@ -100,11 +99,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="TARGET TRIGGER (Leave blank for ANY message):"
+        android:layout_marginTop="12dp"
+        android:text="Filter keyword (optional)"
         android:textColor="@color/text_muted"
-        android:textSize="10sp"
-        android:textStyle="bold" />
+        android:textSize="10sp" />
 
     <EditText
         android:id="@+id/et_target_filter"
@@ -112,9 +110,9 @@
         android:layout_height="36dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/bg_edit_text"
-        android:hint="e.g. user name or specific phrase"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:hint="Any message or specific sender"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:textColor="@color/text_primary"
         android:textColorHint="@color/text_muted"
         android:textSize="11sp" />
@@ -123,7 +121,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -131,8 +129,8 @@
             android:id="@+id/cb_turbo_spam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/glitch_red"
-            android:text="Turbo Spam"
+            android:buttonTint="@color/white"
+            android:text="Burst mode"
             android:textColor="@color/text_primary"
             android:textSize="11sp" />
 
@@ -144,7 +142,7 @@
             android:layout_weight="1"
             android:gravity="end"
             android:text="Delay: 300ms"
-            android:textColor="@color/cyber_cyan"
+            android:textColor="@color/text_muted"
             android:textSize="11sp" />
     </LinearLayout>
 
@@ -152,29 +150,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_instant_roast"
             android:layout_width="0dp"
             android:layout_height="36dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="6dp"
             android:layout_weight="1"
             android:background="@drawable/bg_neon_button_cyan"
-            android:text="🔥 FORCE ROAST"
-            android:textColor="@color/cyber_cyan"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:text="Generate Reply"
+            android:textColor="@color/text_primary"
+            android:textSize="11sp" />
 
         <Button
             android:id="@+id/btn_clear_counter"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:background="@drawable/bg_edit_text"
+            android:background="@drawable/bg_neon_button_cyan"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:text="RESET"
+            android:text="Reset"
             android:textColor="@color/text_secondary"
             android:textSize="11sp" />
     </LinearLayout>
@@ -183,9 +180,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="© redglitchx • Universal Injector"
+        android:text="Copyright © redglitchx • All Rights Reserved"
         android:textColor="@color/text_muted"
         android:textSize="9sp" />
 

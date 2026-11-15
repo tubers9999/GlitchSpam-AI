@@ -219,7 +219,7 @@ class GlitchOverlayService : Service() {
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             layoutType,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.CENTER
@@ -270,6 +270,20 @@ class GlitchOverlayService : Service() {
 
         // Initialize target filter
         etTarget.setText(config.targetFilter)
+        etTarget.setOnFocusChangeListener { _, hasFocus ->
+            val wView = windowView ?: return@setOnFocusChangeListener
+            val params = windowParams ?: return@setOnFocusChangeListener
+            if (hasFocus) {
+                params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+            } else {
+                params.flags = params.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            }
+            try {
+                windowManager.updateViewLayout(wView, params)
+            } catch (e: Exception) {
+                Log.e("GlitchOverlay", "Error updating focus flag: ${e.message}")
+            }
+        }
         etTarget.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -338,15 +352,17 @@ class GlitchOverlayService : Service() {
         val tvStatus = view.findViewById<TextView>(R.id.tv_hud_status)
 
         if (config.isActive) {
-            btnToggle.text = "🛑 STOP SPAMMER (ACTIVE)"
-            btnToggle.setBackgroundResource(R.drawable.bg_neon_button)
-            tvStatus.text = "Status: RUNNING • Auto-Hook Active"
-            tvStatus.setTextColor(Color.parseColor("#00E676"))
-        } else {
-            btnToggle.text = "⚡ START AUTO-ROAST & SPAM"
+            btnToggle.text = "Stop Assistant"
             btnToggle.setBackgroundResource(R.drawable.bg_neon_button_cyan)
-            tvStatus.text = "Status: PAUSED"
-            tvStatus.setTextColor(Color.parseColor("#9CA3AF"))
+            btnToggle.setTextColor(Color.parseColor("#F4F4F5"))
+            tvStatus.text = "Status: Active"
+            tvStatus.setTextColor(Color.parseColor("#22C55E"))
+        } else {
+            btnToggle.text = "Start Assistant"
+            btnToggle.setBackgroundResource(R.drawable.bg_neon_button)
+            btnToggle.setTextColor(Color.parseColor("#09090B"))
+            tvStatus.text = "Status: Paused"
+            tvStatus.setTextColor(Color.parseColor("#A1A1AA"))
         }
     }
 
@@ -354,9 +370,9 @@ class GlitchOverlayService : Service() {
         val bubble = bubbleView ?: return
         val statusDot = bubble.findViewById<View>(R.id.view_status_dot)
         if (isActive) {
-            statusDot?.setBackgroundColor(Color.parseColor("#00E676")) // Neon Green
+            statusDot?.setBackgroundColor(Color.parseColor("#22C55E"))
         } else {
-            statusDot?.setBackgroundColor(Color.parseColor("#FF0055")) // Red
+            statusDot?.setBackgroundColor(Color.parseColor("#52525B"))
         }
     }
 
