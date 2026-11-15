@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cyber_bg"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Cyberpunk Banner -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_cyber_card_highlight"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="GLITCH SPAMMER AI"
+                    android:textColor="@color/glitch_red"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_badge"
+                    android:paddingStart="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="2dp"
+                    android:text="v1.0.0 • ACTIVE"
+                    android:textColor="@color/cyber_green"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Universal AI Spammer &amp; Auto-Roaster • WhatsApp / Discord / Telegram / All"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Developed by redglitchx"
+                android:textColor="@color/cyber_cyan"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Permissions Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="SYSTEM PERMISSIONS"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_cyber_card"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Accessibility Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Accessibility Service (Required)"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_acc_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Status: Disabled (Reads msgs &amp; clicks send)"
+                        android:textColor="@color/glitch_red"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_grant_accessibility"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_neon_button"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="ENABLE"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/cyber_card_stroke" />
+
+            <!-- Overlay Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Floating Bubble Overlay"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_overlay_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Status: Check required (Shows HUD bubble)"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_grant_overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_neon_button_cyan"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="ENABLE"
+                    android:textColor="@color/cyber_cyan"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Launch Bubble Button -->
+            <Button
+                android:id="@+id/btn_launch_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_neon_button"
+                android:text="🚀 LAUNCH FLOATING BUBBLE &amp; HUD"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- AI Server & Auto Detect Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="AI ENGINE CONFIGURATION (HTTPS + API KEY + AUTO DETECT)"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_cyber_card"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="API Endpoint URL (HTTPS):"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <EditText
+                android:id="@+id/et_api_url"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_edit_text"
+                android:hint="https://api.openai.com/v1"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted"
+                android:textSize="12sp" />
+
+            <!-- Preset server buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_preset_openai"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edit_text"
+                    android:text="OpenAI"
+                    android:textColor="@color/cyber_cyan"
+                    android:textSize="10sp" />
+
+                <Button
+                    android:id="@+id/btn_preset_openrouter"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edit_text"
+                    android:text="OpenRouter"
+                    android:textColor="@color/cyber_cyan"
+                    android:textSize="10sp" />
+
+                <Button
+                    android:id="@+id/btn_preset_groq"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edit_text"
+                    android:text="Groq"
+                    android:textColor="@color/cyber_cyan"
+                    android:textSize="10sp" />
+
+                <Button
+                    android:id="@+id/btn_preset_deepseek"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edit_text"
+                    android:text="DeepSeek"
+                    android:textColor="@color/cyber_cyan"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="API Key (Bearer Token):"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <EditText
+                android:id="@+id/et_api_key"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_edit_text"
+                android:hint="sk-..."
+                android:inputType="textPassword"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted"
+                android:textSize="12sp" />
+
+            <!-- Auto-Detect Models Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Model Selection:"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btn_auto_detect_models"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_neon_button_cyan"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="🔍 AUTO-DETECT MODELS"
+                    android:textColor="@color/cyber_cyan"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/sp_models"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_edit_text" />
+
+            <!-- Bypass / Jailbreak Mode -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/cyber_card_stroke" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bypass Guardrails / Jailbreak Mode"
+                        android:textColor="@color/glitch_red"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Uncensored savage replies without moral filters"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sw_bypass_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Jailbreak Preset:"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp" />
+
+            <Spinner
+                android:id="@+id/sp_jailbreak_presets"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_edit_text" />
+        </LinearLayout>
+
+        <!-- Target & Language Configuration -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="ROAST, LANGUAGE &amp; TARGET CRITERIA"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_cyber_card"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Roast Tone:"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+
+                    <Spinner
+                        android:id="@+id/sp_tone"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/bg_edit_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Language:"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
+
+                    <Spinner
+                        android:id="@+id/sp_language"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/bg_edit_text" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Target Filter (Match specific phrase or contact):"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <EditText
+                android:id="@+id/et_target_config"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_edit_text"
+                android:hint="Leave empty to reply/roast ANY incoming message"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted"
+                android:textSize="12sp" />
+
+            <!-- Spammer Timing Controls -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_delay_display"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Spam Delay: 300 ms"
+                    android:textColor="@color/cyber_cyan"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_burst_display"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Burst: 1x Reply"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_delay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:max="2000"
+                android:min="50"
+                android:progress="300"
+                android:progressTint="@color/glitch_red"
+                android:thumbTint="@color/glitch_red_light" />
+
+            <!-- Shake to kill switch -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Shake Device Panic Kill-Switch"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sw_shake_kill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Test Sandbox & Live Terminal -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="LIVE TEST SANDBOX &amp; TERMINAL"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_cyber_card"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_test_input"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edit_text"
+                    android:hint="Simulate incoming message..."
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_muted"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btn_test_roast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_neon_button"
+                    android:text="TEST ROAST"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_terminal_output"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="8dp"
+                android:background="#050608"
+                android:fontFamily="monospace"
+                android:padding="8dp"
+                android:scrollbars="vertical"
+                android:text="[GLITCH_SYSTEM_READY] Waiting for trigger or test fire...\n[STATUS] Universal hook standby for WhatsApp, Discord, Telegram."
+                android:textColor="@color/cyber_green"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <!-- Save Settings Button -->
+        <Button
+            android:id="@+id/btn_save_settings"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_neon_button_cyan"
+            android:text="💾 SAVE ALL SETTINGS"
+            android:textColor="@color/cyber_cyan"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <!-- Copyright Footer -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Copyright © redglitchx"
+                android:textColor="@color/glitch_red"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="All Rights Reserved • Extreme AI Spammer &amp; Auto-Roaster"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

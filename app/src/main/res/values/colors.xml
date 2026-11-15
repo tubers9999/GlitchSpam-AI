@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Cyberpunk Glitch Palette by redglitchx -->
+    <color name="cyber_bg">#0B0C10</color>
+    <color name="cyber_surface">#141622</color>
+    <color name="cyber_surface_light">#1D2032</color>
+    <color name="cyber_card_stroke">#2E334D</color>
+    
+    <color name="glitch_red">#FF0055</color>
+    <color name="glitch_red_light">#FF3377</color>
+    <color name="glitch_red_dark">#B3003B</color>
+    <color name="glitch_red_trans">#33FF0055</color>
+    
+    <color name="cyber_cyan">#00F0FF</color>
+    <color name="cyber_cyan_trans">#2200F0FF</color>
+    <color name="cyber_purple">#A855F7</color>
+    
+    <color name="cyber_green">#00E676</color>
+    <color name="cyber_green_trans">#2200E676</color>
+    <color name="cyber_yellow">#FFD600</color>
+    <color name="cyber_yellow_trans">#22FFD600</color>
+    
+    <color name="text_primary">#F3F4F6</color>
+    <color name="text_secondary">#9CA3AF</color>
+    <color name="text_muted">#6B7280</color>
+    
+    <color name="overlay_window_bg">#F20D0F18</color>
+</resources>

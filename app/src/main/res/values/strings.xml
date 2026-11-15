@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GlitchSpam AI</string>
+    <string name="accessibility_service_label">GlitchSpam AI Core Engine</string>
+    <string name="accessibility_service_desc">Reads incoming messages and automates replies and spamming for WhatsApp, Discord, and other messaging apps. Developed by redglitchx.</string>
+</resources>
