@@ -109,6 +109,7 @@ class AiClient(private val config: AppConfig) {
 
         // If no API key is provided, use instant offline roast database
         if (config.apiKey.isBlank()) {
+            android.util.Log.w("AiClient", "API key is blank, using offline preset database")
             return@withContext PresetRoasts.getRandomRoast(targetLang)
         }
 
@@ -117,7 +118,7 @@ class AiClient(private val config: AppConfig) {
 
             val payload = JSONObject().apply {
                 put("model", config.selectedModel.ifBlank { "gpt-4o-mini" })
-                put("temperature", 0.95)
+                put("temperature", 0.85)
                 put("max_tokens", 150)
 
                 val messages = JSONArray().apply {
@@ -127,27 +128,31 @@ class AiClient(private val config: AppConfig) {
                     })
                     put(JSONObject().apply {
                         put("role", "user")
-                        put("content", "Interlocutorul a spus mesajul: \"$incomingMessage\". Pune-l la punct imediat!")
+                        put("content", "Mesajul primit: \"$incomingMessage\". Dă o replică de roast acidă, scurtă și tăioasă în limba $targetLang:")
                     })
                 }
                 put("messages", messages)
             }
 
             val requestBody = payload.toString().toRequestBody(JSON_MEDIA_TYPE)
+            val cleanUrl = config.apiUrl.trim().trimEnd('/')
+            val endpoint = if (cleanUrl.endsWith("/chat/completions")) cleanUrl else "$cleanUrl/chat/completions"
+
             val request = Request.Builder()
-                .url("${config.apiUrl}/chat/completions")
-                .header("Authorization", "Bearer ${config.apiKey}")
+                .url(endpoint)
+                .header("Authorization", "Bearer ${config.apiKey.trim()}")
                 .header("Content-Type", "application/json")
                 .post(requestBody)
                 .build()
 
             val response = httpClient.newCall(request).execute()
+            val body = response.body?.string() ?: ""
+
             if (!response.isSuccessful) {
-                // Fallback to offline roasts on API error
+                android.util.Log.e("AiClient", "API error HTTP ${response.code}: $body")
                 return@withContext PresetRoasts.getRandomRoast(targetLang)
             }
 
-            val body = response.body?.string() ?: return@withContext PresetRoasts.getRandomRoast(targetLang)
             val json = JSONObject(body)
             val choices = json.optJSONArray("choices")
             if (choices != null && choices.length() > 0) {
@@ -155,13 +160,13 @@ class AiClient(private val config: AppConfig) {
                 val msgObj = first.optJSONObject("message")
                 val text = msgObj?.optString("content")?.trim() ?: ""
                 if (text.isNotBlank()) {
-                    // Clean up any enclosing quotes
                     return@withContext text.removeSurrounding("\"").removeSurrounding("'")
                 }
             }
 
             PresetRoasts.getRandomRoast(targetLang)
         } catch (e: Exception) {
+            android.util.Log.e("AiClient", "Network exception: ${e.message}", e)
             PresetRoasts.getRandomRoast(targetLang)
         }
     }

@@ -1,189 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/window_root"
-    android:layout_width="300dp"
+    android:layout_width="290dp"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_floating_window"
+    android:background="@drawable/bg_floating_bar"
+    android:elevation="8dp"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="6dp">
 
-    <!-- Header bar -->
+    <!-- Compact Floating Bar Header Row -->
     <LinearLayout
         android:id="@+id/header_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="6dp">
 
         <View
             android:id="@+id/status_led"
-            android:layout_width="6dp"
-            android:layout_height="6dp"
-            android:background="@drawable/bg_badge" />
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:background="@drawable/bg_status_dot_idle" />
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="Glitch Assistant HUD"
+            android:text="Glitch"
             android:textColor="@color/text_primary"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <!-- Quick Reply Action Button -->
+        <TextView
+            android:id="@+id/btn_instant_roast"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_bar_button_primary"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Reply"
+            android:textColor="@color/button_primary_text"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <!-- Master Active Toggle Button -->
+        <TextView
+            android:id="@+id/btn_toggle_active"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_bar_button_secondary"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:text="Paused"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+
+        <!-- Expand Settings Toggle -->
+        <TextView
+            android:id="@+id/btn_expand_settings"
+            android:layout_width="26dp"
+            android:layout_height="28dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="⚙"
+            android:textColor="@color/text_muted"
+            android:textSize="13sp" />
+
+        <!-- Minimize to Bubble -->
         <TextView
             android:id="@+id/btn_minimize"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="22dp"
+            android:layout_height="28dp"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
             android:text="—"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp" />
+            android:textColor="@color/text_muted"
+            android:textSize="13sp" />
 
+        <!-- Close Entire Overlay -->
         <TextView
             android:id="@+id/btn_close"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="4dp"
+            android:layout_width="22dp"
+            android:layout_height="28dp"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
             android:text="✕"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:background="@color/cyber_card_stroke" />
-
-    <!-- Status & Stats -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_hud_status"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Status: Paused"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp" />
-
-        <TextView
-            android:id="@+id/tv_hud_stats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Count: 0"
             android:textColor="@color/text_muted"
             android:textSize="11sp" />
     </LinearLayout>
 
-    <!-- Master Start / Stop Button -->
-    <Button
-        android:id="@+id/btn_toggle_active"
-        android:layout_width="match_parent"
-        android:layout_height="38dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/bg_neon_button"
-        android:text="Start Assistant"
-        android:textColor="@color/button_primary_text"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
-    <!-- Target Filter -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Filter keyword (optional)"
-        android:textColor="@color/text_muted"
-        android:textSize="10sp" />
-
-    <EditText
-        android:id="@+id/et_target_filter"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/bg_edit_text"
-        android:hint="Any message or specific sender"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:textColor="@color/text_primary"
-        android:textColorHint="@color/text_muted"
-        android:textSize="11sp" />
-
-    <!-- Mode and Speed Row -->
+    <!-- Expandable Settings & Stats Tray (Hidden by default) -->
     <LinearLayout
+        android:id="@+id/layout_settings_tray"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:paddingStart="8dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="6dp"
+        android:visibility="gone">
 
-        <CheckBox
-            android:id="@+id/cb_turbo_spam"
-            android:layout_width="wrap_content"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/cyber_card_stroke" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/white"
-            android:text="Burst mode"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_hud_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Status: Ready"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_hud_stats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Count: 0"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/et_target_filter"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_edit_text"
+            android:hint="Trigger keyword (optional)"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_muted"
             android:textSize="11sp" />
 
-        <TextView
-            android:id="@+id/tv_speed_label"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="Delay: 300ms"
-            android:textColor="@color/text_muted"
-            android:textSize="11sp" />
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_turbo_spam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/white"
+                android:text="Burst"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/btn_clear_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_bar_button_secondary"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="Reset"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp" />
+        </LinearLayout>
     </LinearLayout>
-
-    <!-- Action Buttons Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_instant_roast"
-            android:layout_width="0dp"
-            android:layout_height="36dp"
-            android:layout_marginEnd="6dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_neon_button_cyan"
-            android:text="Generate Reply"
-            android:textColor="@color/text_primary"
-            android:textSize="11sp" />
-
-        <Button
-            android:id="@+id/btn_clear_counter"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:background="@drawable/bg_neon_button_cyan"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:text="Reset"
-            android:textColor="@color/text_secondary"
-            android:textSize="11sp" />
-    </LinearLayout>
-
-    <!-- Footer -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:gravity="center"
-        android:text="Copyright © redglitchx • All Rights Reserved"
-        android:textColor="@color/text_muted"
-        android:textSize="9sp" />
 
 </LinearLayout>

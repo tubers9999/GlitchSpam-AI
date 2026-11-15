@@ -134,7 +134,10 @@ class GlitchAccessibilityService : AccessibilityService() {
                 val inputNode = findInputEditText(currentRoot)
 
                 if (inputNode != null) {
+                    // Focus and click the input field
+                    inputNode.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                     inputNode.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
+                    delay(50)
 
                     // 1. Primary injection via ACTION_SET_TEXT
                     val arguments = Bundle().apply {
@@ -145,7 +148,7 @@ class GlitchAccessibilityService : AccessibilityService() {
                     }
                     var textSet = inputNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
 
-                    // 2. Clipboard paste fallback (critical for Discord React Native state trigger)
+                    // 2. Clipboard paste fallback (vital for React Native apps like Discord)
                     try {
                         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
                         val clip = ClipData.newPlainText("glitch_text", roastText)
@@ -157,20 +160,26 @@ class GlitchAccessibilityService : AccessibilityService() {
                         Log.w(TAG, "Clipboard paste fallback: ${e.message}")
                     }
 
-                    if (textSet) {
-                        // Micro-delay for UI rendering before clicking send
-                        delay(120)
+                    // Micro-delay for UI rendering before clicking send
+                    delay(150)
 
-                        // Find and click send button
-                        val refreshedRoot = rootInActiveWindow ?: currentRoot
-                        val sendButton = findSendButton(refreshedRoot)
-                        if (sendButton != null) {
-                            sendButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                            config.incrementSentCount()
-                            notifyStatus("Sent #${config.totalSentCount}", config.totalSentCount, roastText)
-                        } else {
-                            // Fallback: try pressing ACTION_CLICK on send text
-                            sendButtonFallbackClick(refreshedRoot)
+                    // Find and click send button
+                    val refreshedRoot = rootInActiveWindow ?: currentRoot
+                    var sendButton = findSendButton(refreshedRoot)
+
+                    // Fallback to input's parent hierarchy
+                    if (sendButton == null && inputNode.parent != null) {
+                        sendButton = findSendButton(inputNode.parent)
+                    }
+
+                    if (sendButton != null) {
+                        sendButton.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                        config.incrementSentCount()
+                        notifyStatus("Sent #${config.totalSentCount}", config.totalSentCount, roastText)
+                    } else {
+                        val clicked = sendButtonFallbackClick(refreshedRoot)
+                        if (!clicked) {
+                            notifyStatus("Injected #${config.totalSentCount + 1}", config.totalSentCount, roastText)
                         }
                     }
                 }
@@ -270,19 +279,26 @@ class GlitchAccessibilityService : AccessibilityService() {
         return null
     }
 
-    private fun sendButtonFallbackClick(node: AccessibilityNodeInfo?) {
-        if (node == null) return
-        val list = node.findAccessibilityNodeInfosByText("Send")
-        if (!list.isNullOrEmpty()) {
-            list[0].performAction(AccessibilityNodeInfo.ACTION_CLICK)
-            config.incrementSentCount()
-            return
+    private fun sendButtonFallbackClick(node: AccessibilityNodeInfo?): Boolean {
+        if (node == null) return false
+        val terms = listOf("Send", "Trimite", "send", "trimite", "Enviar", "Envoyer")
+        for (term in terms) {
+            val list = node.findAccessibilityNodeInfosByText(term)
+            if (!list.isNullOrEmpty()) {
+                for (item in list) {
+                    if (item.isClickable) {
+                        item.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                        config.incrementSentCount()
+                        return true
+                    } else if (item.parent?.isClickable == true) {
+                        item.parent.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                        config.incrementSentCount()
+                        return true
+                    }
+                }
+            }
         }
-        val listRo = node.findAccessibilityNodeInfosByText("Trimite")
-        if (!listRo.isNullOrEmpty()) {
-            listRo[0].performAction(AccessibilityNodeInfo.ACTION_CLICK)
-            config.incrementSentCount()
-        }
+        return false
     }
 
     private fun isSystemOrStatusLabel(text: String): Boolean {

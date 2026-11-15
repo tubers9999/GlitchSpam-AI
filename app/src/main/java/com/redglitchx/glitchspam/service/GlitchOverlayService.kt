@@ -17,10 +17,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.*
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.app.NotificationCompat
 import com.redglitchx.glitchspam.R
 import com.redglitchx.glitchspam.model.AppConfig
@@ -126,7 +126,8 @@ class GlitchOverlayService : Service() {
     }
 
     private fun createFloatingBubble() {
-        val inflater = LayoutInflater.from(this)
+        val themeWrapper = ContextThemeWrapper(this, R.style.Theme_GlitchSpamAI)
+        val inflater = LayoutInflater.from(themeWrapper)
         bubbleView = inflater.inflate(R.layout.layout_floating_bubble, null)
 
         val layoutType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -205,7 +206,8 @@ class GlitchOverlayService : Service() {
     private fun showFloatingWindow() {
         if (windowView != null) return
 
-        val inflater = LayoutInflater.from(this)
+        val themeWrapper = ContextThemeWrapper(this, R.style.Theme_GlitchSpamAI)
+        val inflater = LayoutInflater.from(themeWrapper)
         windowView = inflater.inflate(R.layout.layout_floating_window, null)
 
         val layoutType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -222,7 +224,9 @@ class GlitchOverlayService : Service() {
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
             PixelFormat.TRANSLUCENT
         ).apply {
-            gravity = Gravity.CENTER
+            gravity = Gravity.TOP or Gravity.START
+            x = bubbleParams?.x ?: 20
+            y = bubbleParams?.y ?: 300
         }
 
         setupWindowControls(windowView!!)
@@ -250,11 +254,13 @@ class GlitchOverlayService : Service() {
         val header = view.findViewById<View>(R.id.header_bar)
         val btnMinimize = view.findViewById<TextView>(R.id.btn_minimize)
         val btnClose = view.findViewById<TextView>(R.id.btn_close)
-        val btnToggle = view.findViewById<Button>(R.id.btn_toggle_active)
+        val btnToggle = view.findViewById<TextView>(R.id.btn_toggle_active)
+        val btnExpand = view.findViewById<TextView>(R.id.btn_expand_settings)
+        val layoutTray = view.findViewById<View>(R.id.layout_settings_tray)
         val etTarget = view.findViewById<EditText>(R.id.et_target_filter)
         val cbTurbo = view.findViewById<CheckBox>(R.id.cb_turbo_spam)
-        val btnForceRoast = view.findViewById<Button>(R.id.btn_instant_roast)
-        val btnReset = view.findViewById<Button>(R.id.btn_clear_counter)
+        val btnForceRoast = view.findViewById<TextView>(R.id.btn_instant_roast)
+        val btnReset = view.findViewById<TextView>(R.id.btn_clear_counter)
 
         // Setup Header drag
         setupHeaderDrag(header)
@@ -266,6 +272,12 @@ class GlitchOverlayService : Service() {
         btnClose.setOnClickListener {
             dismissFloatingWindow()
             stopSelf()
+        }
+
+        btnExpand?.setOnClickListener {
+            val isVisible = layoutTray?.visibility == View.VISIBLE
+            layoutTray?.visibility = if (isVisible) View.GONE else View.VISIBLE
+            btnExpand.setTextColor(if (isVisible) Color.parseColor("#71717A") else Color.parseColor("#FFFFFF"))
         }
 
         // Initialize target filter
@@ -306,7 +318,7 @@ class GlitchOverlayService : Service() {
         // Reset counter
         btnReset.setOnClickListener {
             config.resetSentCount()
-            updateHudStats("Counter Reset", 0)
+            updateHudStats("Reset", 0)
         }
 
         // Master Toggle Button
@@ -348,21 +360,24 @@ class GlitchOverlayService : Service() {
 
     private fun updateWindowButtons() {
         val view = windowView ?: return
-        val btnToggle = view.findViewById<Button>(R.id.btn_toggle_active)
+        val btnToggle = view.findViewById<TextView>(R.id.btn_toggle_active)
         val tvStatus = view.findViewById<TextView>(R.id.tv_hud_status)
+        val statusLed = view.findViewById<View>(R.id.status_led)
 
         if (config.isActive) {
-            btnToggle.text = "Stop Assistant"
-            btnToggle.setBackgroundResource(R.drawable.bg_neon_button_cyan)
-            btnToggle.setTextColor(Color.parseColor("#F4F4F5"))
-            tvStatus.text = "Status: Active"
-            tvStatus.setTextColor(Color.parseColor("#22C55E"))
+            btnToggle?.text = "Active"
+            btnToggle?.setBackgroundResource(R.drawable.bg_bar_button_primary)
+            btnToggle?.setTextColor(Color.parseColor("#09090B"))
+            tvStatus?.text = "Status: Active"
+            tvStatus?.setTextColor(Color.parseColor("#22C55E"))
+            statusLed?.setBackgroundResource(R.drawable.bg_status_dot_active)
         } else {
-            btnToggle.text = "Start Assistant"
-            btnToggle.setBackgroundResource(R.drawable.bg_neon_button)
-            btnToggle.setTextColor(Color.parseColor("#09090B"))
-            tvStatus.text = "Status: Paused"
-            tvStatus.setTextColor(Color.parseColor("#A1A1AA"))
+            btnToggle?.text = "Paused"
+            btnToggle?.setBackgroundResource(R.drawable.bg_bar_button_secondary)
+            btnToggle?.setTextColor(Color.parseColor("#A1A1AA"))
+            tvStatus?.text = "Status: Paused"
+            tvStatus?.setTextColor(Color.parseColor("#71717A"))
+            statusLed?.setBackgroundResource(R.drawable.bg_status_dot_idle)
         }
     }
 
@@ -370,9 +385,9 @@ class GlitchOverlayService : Service() {
         val bubble = bubbleView ?: return
         val statusDot = bubble.findViewById<View>(R.id.view_status_dot)
         if (isActive) {
-            statusDot?.setBackgroundColor(Color.parseColor("#22C55E"))
+            statusDot?.setBackgroundResource(R.drawable.bg_status_dot_active)
         } else {
-            statusDot?.setBackgroundColor(Color.parseColor("#52525B"))
+            statusDot?.setBackgroundResource(R.drawable.bg_status_dot_idle)
         }
     }
 
