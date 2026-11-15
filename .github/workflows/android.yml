@@ -35,52 +35,14 @@ jobs:
       - name: Grant Execute Permission to Gradlew
         run: chmod +x gradlew
 
-      - name: Build Debug APK with Gradle
+      - name: Build APK with Gradle
         run: ./gradlew assembleDebug --stacktrace
 
-      - name: Prepare and Sign Release APK
-        env:
-          ANDROID_HOME: /usr/local/lib/android/sdk
+      - name: Prepare APKs for Distribution
         run: |
           mkdir -p dist
-          
-          # Generate signing keystore
-          keytool -genkeypair -v -keystore release.keystore \
-            -alias glitchspam -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass redglitchx -keypass redglitchx \
-            -dname "CN=GlitchSpam, OU=redglitchx, O=redglitchx, L=Bucharest, ST=RO, C=RO"
-
-          BUILD_TOOLS_DIR=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)
-          echo "Using Android build-tools from: $BUILD_TOOLS_DIR"
-          ZIPALIGN="$BUILD_TOOLS_DIR/zipalign"
-          APKSIGNER="$BUILD_TOOLS_DIR/apksigner"
-
-          # Copy debug APK
+          cp app/build/outputs/apk/debug/app-debug.apk dist/GlitchSpam-AI-v1.0.0.apk
           cp app/build/outputs/apk/debug/app-debug.apk dist/GlitchSpam-AI-debug.apk
-
-          # Build release
-          ./gradlew assembleRelease --stacktrace || true
-
-          UNSIGNED_APK=$(find app/build/outputs/apk -name "*release*.apk" | head -n 1)
-          if [ -f "$UNSIGNED_APK" ]; then
-            $ZIPALIGN -f -p 4 "$UNSIGNED_APK" dist/GlitchSpam-AI-release-aligned.apk
-            $APKSIGNER sign \
-              --ks release.keystore \
-              --ks-pass pass:redglitchx \
-              --ks-key-alias glitchspam \
-              --key-pass pass:redglitchx \
-              --min-sdk-version 24 \
-              --v1-signing-enabled true \
-              --v2-signing-enabled true \
-              --v3-signing-enabled true \
-              --out dist/GlitchSpam-AI-v1.0.0.apk \
-              dist/GlitchSpam-AI-release-aligned.apk
-            
-            $APKSIGNER verify --verbose dist/GlitchSpam-AI-v1.0.0.apk
-          else
-            cp dist/GlitchSpam-AI-debug.apk dist/GlitchSpam-AI-v1.0.0.apk
-          fi
-
           echo "Final APKs in dist/:"
           ls -lh dist/
 

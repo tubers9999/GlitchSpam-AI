@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.redglitchx.glitchspam"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0-CYBER"
@@ -23,7 +23,7 @@ android {
         }
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
